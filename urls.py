@@ -4,10 +4,7 @@ from django.views.generic.list_detail import object_list
 from models import Comic
 
 urlpatterns = patterns('nr_comics.views',
-    url(r'^$',
-        object_list,
-        {"queryset": Comic.comics.public(),"template_object_name":"comic"},
-        name="archive"),
+    url(r'^$', "archive"),
     url(r'^(?P<slug>\d+)/$', 'comic'),
     url(r'^(?P<slug>\d+)/image/$', 'comic_image'),
 )

@@ -8,8 +8,7 @@ import datetime, os
 
 class ComicsManager(models.Manager):
     def public(self):
-        today = datetime.date.today()
-        return self.filter(date__lte=today)
+        return self.filter(**{'date__lte': datetime.datetime.now()})
 
 def upload_to(instance, filename):
     return "comics/%s-%s%s" % (str(instance.date), slugify(instance.title), os.path.splitext(filename)[1])
@@ -61,12 +60,11 @@ def update_comic_sequence(sender, instance, **kwargs):
     After a save, or a delete, updates the sequence of all comics by date.
     Not in save() in the Comics model because it affects all Comics.
     """
-    query = "UPDATE nr_comics_comic SET sequence=(select count(*) from comics_comic where comics_comic.date <= %s) WHERE id=%s"
+    query = "UPDATE nr_comics_comic SET sequence=(select count(*) from nr_comics_comic where nr_comics_comic.date <= %s) WHERE id=%s"
     cursor = connection.cursor()
     for comic in Comic.comics.all():
         cursor.execute(query,[comic.date, comic.id])
     transaction.commit()
-    cache.set(CACHE_PREFIX + "sequence_total", Comic.comics.public().count(), 600)
 
 models.signals.post_save.connect(update_comic_sequence,sender=Comic)
 models.signals.post_delete.connect(update_comic_sequence,sender=Comic)

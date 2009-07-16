@@ -25,6 +25,13 @@ def comic(request, slug):
         request
     )
 
+def archive(request):
+    return generic.list_detail.object_list(
+        request,
+        queryset = Comic.comics.public(),
+        template_object_name = "comic"
+    )
+
 def comic_image(request, slug):
     """the image for a particular comic"""
     c = get_object_or_404(Comic, sequence=int(slug))
