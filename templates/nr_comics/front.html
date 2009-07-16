@@ -1,0 +1,4 @@
+{% extends "nr_comics/comic_detail.html" %}
+
+
+{% block transcript %}<p id="permalink"><a href="{{ comic.get_absolute_url }}">Permanent link for this comic: <i>{{ comic.title }}</i></a></p>{% endblock %}
