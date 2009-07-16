@@ -24,7 +24,18 @@
 {% endspaceless %}
 
     <h3>{{ comic.date }}<br>{{ comic.newstitle }}</h3>
-    <p>{{ comic.news|safe|linebreaksbr }}</p>{% endblock %}
+    
+
+    <p>{{ comic.news|safe|linebreaksbr }}</p>
+    
+    {% if comic.storyline_set.all %}
+    <h3>Storyline Navigation</h3>
+    {% load storyline %}
+    {% for storyline in comic.storyline_set.all %}
+    {% storyline_nav %}
+    {% endfor %}        
+    {% endif %}
+    {% endblock %}
 
 {% block bodycontent %}
 <!--OnlineComics.net tags -->
