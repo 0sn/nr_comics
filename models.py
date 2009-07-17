@@ -9,6 +9,16 @@ import datetime, os
 class ComicsManager(models.Manager):
     def public(self):
         return self.filter(**{'date__lte': datetime.datetime.now()})
+    
+    def by_year(self):
+        years = self.public().dates('date','year')
+        comics = []
+        for year in years:
+            y = {"year": year, "months": []}
+            for month in self.public().filter(date__year=year.year).dates('date','month'):
+                y["months"].append({"month": month, "comics": self.public().filter(date__year=year.year, date__month=month.month)})
+            comics.append(y)
+        return comics
 
 def upload_to(instance, filename):
     return "comics/%s-%s%s" % (str(instance.date), slugify(instance.title), os.path.splitext(filename)[1])

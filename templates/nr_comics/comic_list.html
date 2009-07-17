@@ -3,44 +3,65 @@
 {% block title %}The Archive of Comics{% endblock %}
 
 {% block headstuff %}
-<script src="{{MEDIA_URL}}/js/archive.js" type="text/javascript" charset="utf-8"></script>
 <style type="text/css">
-.toggler{background-color:#ccc;text-align:right;padding:0 0 0 0;}
-.toggler span{padding:0 1.5em 0 1.5em;}
-.toggler:hover{background-color:#aaa;}
-#main p{margin-bottom:0;}
-#main p.toggler{margin-bottom:1.5em;}
-#main ul{margin:0 1.5em 0 1.5em;padding-bottom:1.5em;text-align:left;}
+.ui-tabs .ui-tabs-hide { display: none !important; }
+#archive ul.nav .ui-state-active a {border-color:#eee;background-color:#eee; font-weight: bold; color: black;}
+#yearlist {width: 80px; margin-right: 18px;}
+.comiclist { width: 416px; float: left;}
+.monthlist { width: 80px; float: left; margin-right: 18px;}
+#archive p { float: right; width: 416px; margin-right: 0;}
 </style>
+<script type="text/javascript" charset="utf-8">
+    $(document).ready(function(){
+        $('#archive').tabs();
+        $('.yearbunch').each(function(){
+            $(this).tabs();
+        });
+    });
+</script>
 {% endblock %}
 
 {% block pageinfo %}
     <h2>Comic Archive</h2>
-    <p>This is the archive of comics. Examine a storyline and dive right in!</p>
+    <p>This is the list of comics by date.</p>
 {% endblock %}
 
 {% block bodycontent %}
-<div class="box">
+<div class="box" id="archive">
+    <p>This is the date-based archive of comics.<br>You might also be interested in the
+        <a href="/storylines/">archive organized by storylines</a>.</p>
 {% spaceless %}
-{% if comic_list %}
-<ul>
-{% for comic in comic_list %}
-<li><a href="{{ comic.get_absolute_url }}"><span>{{ comic.date|date:"j F, Y" }}</span>
-{{comic.title}}</a>
-</li>
-{% endfor %}
+{% if comics %}
+<ul id="yearlist" class="nav">
+{% for year in comics %}
+    <li><a href="#{{year.year|date:"Y"}}">{{ year.year|date:"Y" }}</a></li>
+{% endfor%}
+</ul>
+{% for year in comics %}
+    <div class="yearbunch" id="{{year.year|date:"Y"}}">
+        <ul class="nav monthlist">
+            {% for month in year.months %}
+                <li><a href="#{{ month.month|date:"Y-m"}}">{{ month.month|date:"F" }}</a></li>
+            {% endfor %}
         </ul>
+        {% for month in year.months %}
+            <div class="comiclist" id="{{ month.month|date:"Y-m"}}">
+                <ul class="nav">
+                    {% for comic in month.comics %}
+                        <li><a href="/comics/{{comic.sequence}}/">{{comic.title}}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endfor %}
+    </div>
+{% endfor %}
 {% else %}
-        <p>There are no comics.</p>
+    <p>There are no comics.</p>
 {% endif %}
 {% endspaceless %}
+<br clear="both">
 </div>
 {% endblock %}
 
 {% block localnews %}
-<div id="contribution">
-<h3>Fun Facts</h3>
-<p>There are <b>{{ comic_list|length }}</b> comics posted so far!<br>
-You might like <b>some</b> of them!</p>
-</div>
 {% endblock %}

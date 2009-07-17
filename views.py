@@ -1,4 +1,4 @@
-from django.views import generic
+from django.views.generic.list_detail import object_list
 from django.views.decorators.vary import vary_on_cookie
 from models import Comic
 from nr_utils import render_with_request
@@ -26,11 +26,12 @@ def comic(request, slug):
     )
 
 def archive(request):
-    return generic.list_detail.object_list(
-        request,
-        queryset = Comic.comics.public(),
-        template_object_name = "comic"
+    return render_with_request(
+        "nr_comics/comic_list.html",
+        {"comics": Comic.comics.by_year()},
+        request
     )
+
 
 def comic_image(request, slug):
     """the image for a particular comic"""
