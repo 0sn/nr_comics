@@ -2,6 +2,17 @@
 
 {% block title %} {{ comic.date }}: {{ comic.title }}{% endblock %}
 
+{% block headstuff %}
+    <script src="{{MEDIA_URL}}/js/jquery.cookies.js" type="text/javascript" charset="utf-8"></script>
+    <script src="{{MEDIA_URL}}/js/bookmark.js" type="text/javascript" charset="utf-8"></script>
+    <style type="text/css" media="screen">
+        #bookmarknav a.disabled { border-color:#eee;background-color:#eee;color: black;}
+        #bookmarknav a.disabled:hover {}
+        #bookmarknav .enabled:hover {cursor: pointer;}
+        #bookmarknav {padding-left: 1.5em; padding-right: 1.5em;}
+    </style>
+{% endblock %}
+
 {% block pageinfo %}<h2 id="title">{{ comic.title }}</h2>
 
 {% spaceless %}
@@ -27,6 +38,8 @@
     
 
     <p>{{ comic.news|safe|linebreaksbr }}</p>
+
+    <p id="bookmarknav"></p>
     
     {% if comic.storyline_set.all %}
     <h3>Storyline Navigation</h3>
