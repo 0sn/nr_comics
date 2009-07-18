@@ -6,98 +6,79 @@
     <script src="{{MEDIA_URL}}/js/jquery.cookies.js" type="text/javascript" charset="utf-8"></script>
     <script src="{{MEDIA_URL}}/js/bookmark.js" type="text/javascript" charset="utf-8"></script>
     <style type="text/css" media="screen">
-        #bookmarknav a.disabled { border-color:#eee;background-color:#eee;color: black;}
-        #bookmarknav a.disabled:hover {}
+        #bookmarknav a.disabled { color: #444;font-style:normal;}
+        #bookmarknav a.disabled:hover {background: white;}
         #bookmarknav .enabled:hover {cursor: pointer;}
-        #bookmarknav {padding-left: 1.5em; padding-right: 1.5em;}
     </style>
 {% endblock %}
 
-{% block pageinfo %}<h2 id="title">{{ comic.title }}</h2>
+{% block sidebar %}
 
-{% spaceless %}
-<ul id="topnav">
+<h2 id="title">{{ comic.date }}<br>"{{ comic.title }}"</h2>
+
+<ul class="inline">
 {% ifequal comic.sequence comic.first %}
-    <li id="topnavfirstnot"><a>First</a></li>
-    <li id="topnavprevnot"><a>Previous</a></li>
+    <li>first</li>
+    <li>previous</li>
 {% else %}
-    <li id="topnavfirst"><a href="/comics/{{ comic.first }}/" title="First">First</a></li>
-    <li id="topnavprev"><a href="/comics/{{ comic.previous }}" title="Previous">Previous</a></li>
+    <li class="navfirst"><a href="/comics/{{ comic.first }}/">first</a></li>
+    <li class="navprev"><a href="/comics/{{ comic.previous }}">previous</a></li>
 {% endifequal %}
 {% ifequal comic.sequence comic.last %}
-    <li id="topnavnextnot"><a>Next</a></li>
-    <li id="topnavlastnot"><a>Last</a></li>
+    <li>next</li>
+    <li>last</li>
 {% else %}
-    <li id="topnavnext"><a href="/comics/{{ comic.next }}/" title="Next">Next</a></li>
-    <li id="topnavlast"><a href="/comics/{{ comic.last }}/" title="Last">Last</a></li>
+    <li><a href="/comics/{{ comic.next }}/">next</a></li>
+    <li><a href="/comics/{{ comic.last }}/">last</a></li>
 {% endifequal %}
 </ul>
-{% endspaceless %}
 
-    <h3>{{ comic.date }}<br>{{ comic.newstitle }}</h3>
-    
+    <h3>{{ comic.newstitle }}</h3>
 
     <p>{{ comic.news|safe|linebreaksbr }}</p>
+    
+    {% with comic.origin.all as contributions %}
+    {% if contributions %}
+    <div id="contribution">
+        <h3>Contributions</h3>
+    {% for contribution in contributions %}
+<p><a href="{{ contribution.get_absolute_url }}">{{ contribution.aka }}</a>
+{{ contribution.get_contribution_type_display }}:
+{{ contribution.content }}</p>    
+    {% endfor %}
+    </div>    
+    {% endif %}
+    {% endwith %}
+
+    <hr>
 
     <p id="bookmarknav"></p>
     
+    <div id="storynav">
     {% if comic.storyline_set.all %}
-    <h3>Storyline Navigation</h3>
+        <h3>Storyline{{ comic.storyline_set.all|pluralize }}</h3>
     {% load storyline %}
     {% for storyline in comic.storyline_set.all %}
-    {% storyline_nav %}
+{% storyline_nav %}
     {% endfor %}        
     {% endif %}
-    {% endblock %}
+    </div>
+    
+    <p id="facebook"><a href="http://www.facebook.com/share.php?u=http%3A%2F%2Fnameremoved.com{{ comic.get_absolute_url }}">Share this comic on facebook.</a></p>
+    
+{% endblock %}
 
 {% block bodycontent %}
 <!--OnlineComics.net tags -->
-
 <img src="{{ comic.comic.url }}" width="{{ comic.width}}" height="{{ comic.height}}" alt="Comic for {{ comic.date }}" >
-
-<!-- links to prev and next -->
-<ul id="bottomnav" class="nav">
-{% ifequal comic.sequence comic.first %}
-    <li><span class="currently">First</span></li>
-    <li><span class="currently">Previous</span></li>
-{% else %}
-    <li><a href="/comics/{{ comic.first }}/" title="First">First</a></li>
-    <li><a href="/comics/{{ comic.previous }}" title="Previous">Previous</a></li>
-{% endifequal %}
-{% ifequal comic.sequence comic.last %}
-    <li class="forward"><span class="currently">Next</span></li>
-    <li class="forward"><span class="currently">Last</span></li>
-{% else %}
-    <li class="forward"><a href="/comics/{{ comic.next }}/" title="Next">Next</a></li>
-    <li class="forward"><a href="/comics/{{ comic.last }}/" title="Last">Last</a></li>
-{% endifequal %}    
-</ul>
-<p id="facebook"><a href="http://www.facebook.com/share.php?u=http%3A%2F%2Fnameremoved.com{{ comic.get_absolute_url }}">Post this comic to your Facebook wall.</a></p>
 
 <div id="transcription">
     {% block transcript %}
-    <div class="box">
     <h3>Transcription</h3>
     <code>
         {{ comic.transcript|force_escape|safe|linebreaksbr }}
     </code>
-    </div>
     {% endblock %}
 </div>
 <!-- end of onlinecomics.net -->
-{% endblock %}
-
-{% block localnews %}
-{% with comic.origin.all as contributions %}
-{% if contributions %}
-<div id="contribution">
-<h3>Contributions</h3>
-{% for contribution in contributions %}
-<p><a href="{{ contribution.get_absolute_url }}">{{ contribution.aka }}</a>
-<em>{{ contribution.get_contribution_type_display }}</em>
-{{ contribution.content }}</p>    
-{% endfor %}
-</div>    
-{% endif %}
-{% endwith %}
 {% endblock %}

@@ -3,43 +3,30 @@
 {% block title %}The Archive of Comics{% endblock %}
 
 {% block headstuff %}
-<style type="text/css">
-.ui-tabs .ui-tabs-hide { display: none !important; }
-#archive ul.nav .ui-state-active a {border-color:#eee;background-color:#eee; font-weight: bold; color: black;}
-#yearlist {width: 80px; margin-right: 18px;}
-.comiclist { width: 416px; float: left;}
-.monthlist { width: 80px; float: left; margin-right: 18px;}
-#archive p { float: right; width: 416px; margin-right: 0;}
-</style>
 <script type="text/javascript" charset="utf-8">
     $(document).ready(function(){
-        $('#archive').tabs();
-        $('.yearbunch').each(function(){
-            $(this).tabs();
-        });
+        $('#main').tabs();
+        $('.yearbunch').each(function(){$(this).tabs();});
     });
 </script>
 {% endblock %}
 
-{% block pageinfo %}
+{% block sidebar %}
     <h2>Comic Archive</h2>
-    <p>This is the list of comics by date.</p>
+    <p>This is the date-based archive of comics. You might also be interested in the
+        <a href="/storylines/">archive organized by storylines</a>.</p>
 {% endblock %}
 
 {% block bodycontent %}
-<div class="box" id="archive">
-    <p>This is the date-based archive of comics.<br>You might also be interested in the
-        <a href="/storylines/">archive organized by storylines</a>.</p>
-{% spaceless %}
 {% if comics %}
-<ul id="yearlist" class="nav">
+<ul id="yearlist" class="inline">
 {% for year in comics %}
     <li><a href="#{{year.year|date:"Y"}}">{{ year.year|date:"Y" }}</a></li>
 {% endfor%}
 </ul>
 {% for year in comics %}
     <div class="yearbunch" id="{{year.year|date:"Y"}}">
-        <ul class="nav monthlist">
+        <ul class="inline">
             {% for month in year.months %}
                 <li><a href="#{{ month.month|date:"Y-m"}}">{{ month.month|date:"F" }}</a></li>
             {% endfor %}
@@ -48,7 +35,7 @@
             <div class="comiclist" id="{{ month.month|date:"Y-m"}}">
                 <ul class="nav">
                     {% for comic in month.comics %}
-                        <li><a href="/comics/{{comic.sequence}}/">{{comic.title}}</a></li>
+                        <li><span>{{ comic.date|date:"d F Y" }}</span> <a href="/comics/{{comic.sequence}}/">{{comic.title}}</a></li>
                     {% endfor %}
                 </ul>
             </div>
@@ -58,9 +45,7 @@
 {% else %}
     <p>There are no comics.</p>
 {% endif %}
-{% endspaceless %}
 <br clear="both">
-</div>
 {% endblock %}
 
 {% block localnews %}
