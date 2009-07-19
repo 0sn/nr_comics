@@ -1,4 +1,3 @@
-from django.views.generic.list_detail import object_list
 from django.views.decorators.vary import vary_on_cookie
 from models import Comic
 from nr_utils import render_with_request
