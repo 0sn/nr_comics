@@ -10,6 +10,9 @@ class ComicsManager(models.Manager):
     def public(self):
         return self.filter(**{'date__lte': datetime.datetime.now()})
     
+    def future(self):
+        return self.filter(**{'date__gt': datetime.datetime.now()})
+    
     def by_year(self):
         years = self.public().dates('date','year')
         comics = []
