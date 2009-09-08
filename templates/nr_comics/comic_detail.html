@@ -9,6 +9,7 @@
         #bookmarknav a.disabled { color: #444;font-style:normal;}
         #bookmarknav a.disabled:hover {background: white;}
         #bookmarknav .enabled:hover {cursor: pointer;}
+        #transcription .inline {text-align:right;padding-right:20px;}
     </style>
 {% endblock %}
 
@@ -73,6 +74,22 @@
 <img src="{{ comic.comic.url }}" width="{{ comic.width}}" height="{{ comic.height}}" alt="Comic for {{ comic.date }}" >
 
 <div id="transcription">
+    <ul class="inline">
+    {% ifequal comic.sequence comic.first %}
+        <li>first</li>
+        <li>previous</li>
+    {% else %}
+        <li class="navfirst"><a href="/comics/{{ comic.first }}/">first</a></li>
+        <li class="navprev"><a href="/comics/{{ comic.previous }}">previous</a></li>
+    {% endifequal %}
+    {% ifequal comic.sequence comic.last %}
+        <li>next</li>
+        <li>last</li>
+    {% else %}
+        <li><a href="/comics/{{ comic.next }}/">next</a></li>
+        <li><a href="/comics/{{ comic.last }}/">last</a></li>
+    {% endifequal %}
+    </ul>
     {% block transcript %}
     <h3>Transcription</h3>
     <code>
