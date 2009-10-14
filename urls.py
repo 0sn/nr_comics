@@ -5,4 +5,5 @@ urlpatterns = patterns('nr_comics.views',
     url(r'^$', "archive"),
     url(r'^(?P<slug>\d+)/$', 'comic'),
     url(r'^(?P<slug>\d+)/image/$', 'comic_image'),
+    url(r'^random/$', 'random_comic'),
 )
