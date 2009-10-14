@@ -4,6 +4,7 @@ from nr_utils import render_with_request
 from django.http import HttpResponseRedirect, HttpResponsePermanentRedirect
 import datetime
 from django.shortcuts import get_object_or_404
+import random
 
 def index(request):
     """the front page"""
@@ -31,8 +32,16 @@ def archive(request):
         request
     )
 
-
 def comic_image(request, slug):
     """the image for a particular comic"""
     c = get_object_or_404(Comic, sequence=int(slug))
     return HttpResponsePermanentRedirect(c.comic.url)
+
+def random_comic(request):
+    """redirects to a random comic"""
+    return HttpResponseRedirect(
+        get_object_or_404(
+            Comic,
+            sequence=random.randint(1,Comic.last())
+        ).get_absolute_url()
+    )
