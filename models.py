@@ -56,12 +56,14 @@ class Comic(models.Model):
         return self.date <= datetime.date.today()
     is_public.boolean = True
     
+    @classmethod
     def first(self):
         return 1
     
     def previous(self):
         return self.sequence - 1
     
+    @classmethod
     def last(self):
         return Comic.comics.public().count()
     
