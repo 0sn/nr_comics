@@ -4,6 +4,17 @@
 <h2>{{ obj.newstitle }}</h2>
 <p>{{obj.news|safe|linebreaksbr}}</p>
 
+{% with comic.origin.all as contributions %}
+{% if contributions %}
+<h2>Contributions to the comic</h2>
+{% for contribution in contributions %}
+<p><a href="{{ contribution.get_absolute_url }}">{{contribution.aka}}</a>
+{{ contribution.get_contribution_type_display }}:
+{{ contribution.content }}</p>
+{% endfor %}
+{% endif %}
+[% endwith %}
+
 {% if obj.storyline_set.all %}
     <p>Storyline{{ obj.storyline_set.count|pluralize }} this comic is involved in: {% for story in obj.storyline_set.all %}
         <a href="http://nameremoved.com/storylines/#{{story.slug}}">{{story.title}}</a>
