@@ -1,5 +1,7 @@
 {% extends "nr_comics/comic_detail.html" %}
 
+{% block title %}Today's Comics{% endblock %}
+
 {% block sidebar %}
 {{block.super}}
 <p id="permalink"><a href="{{ comic.get_absolute_url }}">Permanent link for this comic</a></p>
